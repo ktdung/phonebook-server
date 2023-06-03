@@ -46,26 +46,26 @@ app.get("/info", (req, res) => {
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
-  if (!body.name) {
+  if (!body.name || !body.number) {
     return response.status(400).json({
-      error: "content missing",
+      error: "Name and Nunber is requred",
     });
   }
 
-  Person.findOne({ name: body.name })
-    .then((entry) => {
-      if (entry) {
-        entry.number = body.number;
-      } else {
-        entry = new Person({
-          name: body.name,
-          number: body.number || "000-00-0000000",
-        });
-
-        entry.save().then((savedPerson) => {
-          res.json(savedPerson);
-        });
-      }
+  Person.findOneAndUpdate(
+    {
+      name: body.name,
+    },
+    {
+      number: body.number,
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  )
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
     })
     .catch((error) => {
       console.error(error);
