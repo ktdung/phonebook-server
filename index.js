@@ -43,6 +43,10 @@ app.get("/info", (req, res) => {
   res.send(htmlData);
 });
 
+app.get("/api/persons?name=:name", (req, res) => {
+  console.log("hihi");
+});
+
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
